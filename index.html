@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Falling Sand with Random Colors & Collision</title>
+  <title>Falling Sand with Bigger Particles</title>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
   <style>
     body { margin: 0; overflow: hidden; }
@@ -14,14 +14,19 @@
 // Grid and state definitions
 let grid;
 let cols, rows;
+// Size of each “particle” in pixels
+const resolution = 4;
 // Color palette: palette[0] is empty, entries 1–10 hold random colors
 let palette = [null];
 
 function setup() {
+  // Canvas size stays 400×400, but our logical grid is smaller:
   createCanvas(400, 400);
   pixelDensity(1);
-  cols = width;
-  rows = height;
+  
+  // Compute how many cells fit horizontally/vertically
+  cols = width / resolution;
+  rows = height / resolution;
 
   // Initialize grid to all zeros (empty)
   grid = Array.from({ length: cols }, () => Array(rows).fill(0));
@@ -80,33 +85,24 @@ function draw() {
     }
   }
 
-  // 2. Render: directly manipulate pixels array
-  loadPixels();
+  // 2. Render each cell as a rectangle of size resolution×resolution
+  noStroke();
   for (let x = 0; x < cols; x++) {
     for (let y = 0; y < rows; y++) {
-      let i = (x + y * cols) * 4;
       let id = grid[x][y];
       if (id > 0) {
-        let col = palette[id];
-        pixels[i    ] = col[0];
-        pixels[i + 1] = col[1];
-        pixels[i + 2] = col[2];
-        pixels[i + 3] = 255;
+        fill(palette[id][0], palette[id][1], palette[id][2]);
       } else {
-        // Empty → black background
-        pixels[i    ] = 0;
-        pixels[i + 1] = 0;
-        pixels[i + 2] = 0;
-        pixels[i + 3] = 255;
+        fill(0);
       }
+      rect(x * resolution, y * resolution, resolution, resolution);
     }
   }
-  updatePixels();
 
   // 3. Mouse interaction: place a sand particle of random color when pressed
   if (mouseIsPressed) {
-    let mx = constrain(floor(mouseX), 0, cols - 1);
-    let my = constrain(floor(mouseY), 0, rows - 1);
+    let mx = constrain(floor(mouseX / resolution), 0, cols - 1);
+    let my = constrain(floor(mouseY / resolution), 0, rows - 1);
     // Pick a random palette index between 1 and palette.length - 1
     let randId = floor(random(1, palette.length));
     grid[mx][my] = randId;
