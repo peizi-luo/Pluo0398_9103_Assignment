@@ -1,18 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="UTF-8">
+  <title>Falling Sand with Random Colors & Collision</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script>
+// Grid and state definitions
+let grid;
+let cols, rows;
+// Color palette: palette[0] is empty, entries 1–10 hold random colors
+let palette = [null];
 
-    <title>Sketch</title>
+function setup() {
+  createCanvas(400, 400);
+  pixelDensity(1);
+  cols = width;
+  rows = height;
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+  // Initialize grid to all zeros (empty)
+  grid = Array.from({ length: cols }, () => Array(rows).fill(0));
 
-    <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5.sound.min.js"></script>
-  </head>
+  // Generate 10 random colors (R, G, B)
+  for (let i = 0; i < 10; i++) {
+    palette.push([
+      random(50, 255),  // Red component
+      random(50, 255),  // Green component
+      random(50, 255)   // Blue component
+    ]);
+  }
+}
 
-  <body>
-    <script src="sketch.js"></script>
-  </body>
+function draw() {
+  background(0);
+
+  // 1. Physics update: falling + same-color collision removal
+  for (let x = cols - 1; x >= 0; x--) {
+    for (let y = rows - 1; y >= 0; y--) {
+      let id = grid[x][y];
+      if (id > 0) {
+        // Vertical check
+        if (y + 1 < rows) {
+          // If below is same color → remove both
+          if (grid[x][y + 1] === id) {
+            grid[x][y]     = 0;
+            grid[x][y + 1] = 0;
+            continue;
+          }
+          // If below is empty → fall down
+          if (grid[x][y + 1] === 0) {
+            grid[x][y]     = 0;
+            grid[x][y + 1] = id;
+            continue;
+          }
+        }
+        // Diagonal check (random left or right)
+        let dir = random() < 0.5 ? -1 : 1;
+        let nx  = x + dir;
+        if (nx >= 0 && nx < cols && y + 1 < rows) {
+          // If diagonal is same color → remove both
+          if (grid[nx][y + 1] === id) {
+            grid[x][y]      = 0;
+            grid[nx][y + 1] = 0;
+            continue;
+          }
+          // If diagonal is empty → fall diagonally
+          if (grid[nx][y + 1] === 0) {
+            grid[x][y]      = 0;
+            grid[nx][y + 1] = id;
+            continue;
+          }
+        }
+      }
+    }
+  }
+
+  // 2. Render: directly manipulate pixels array
+  loadPixels();
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      let i = (x + y * cols) * 4;
+      let id = grid[x][y];
+      if (id > 0) {
+        let col = palette[id];
+        pixels[i    ] = col[0];
+        pixels[i + 1] = col[1];
+        pixels[i + 2] = col[2];
+        pixels[i + 3] = 255;
+      } else {
+        // Empty → black background
+        pixels[i    ] = 0;
+        pixels[i + 1] = 0;
+        pixels[i + 2] = 0;
+        pixels[i + 3] = 255;
+      }
+    }
+  }
+  updatePixels();
+
+  // 3. Mouse interaction: place a sand particle of random color when pressed
+  if (mouseIsPressed) {
+    let mx = constrain(floor(mouseX), 0, cols - 1);
+    let my = constrain(floor(mouseY), 0, rows - 1);
+    // Pick a random palette index between 1 and palette.length - 1
+    let randId = floor(random(1, palette.length));
+    grid[mx][my] = randId;
+  }
+}
+</script>
+</body>
 </html>
