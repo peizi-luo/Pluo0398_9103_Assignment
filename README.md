@@ -24,6 +24,7 @@ Click any static or dynamic block to transform it into a cluster of randomly col
 
 ![Figure 3:Keyboard controls dpwn](./%20readmeImage/3.jpg)
 
+
 ![Figure 4:Keyboard controls up](./%20readmeImage/1.jpg)
 
    - Press the Spacebar to start and stop block generation.  
