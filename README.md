@@ -13,6 +13,7 @@
 
 This project is based on Piet Mondrian's Broadway Jazz work, inspired by its geometric shapes, horizontal and vertical lines, and the three primary colours of red, yellow, and blue. The work uses coloured blocks and particles in a grid structure to simulate the interaction of real sand grains falling, including a matching and disappearing effect similar to Tetris. This allows users to participate while viewing the art, adding fun without losing the artistic appreciation.
 
+
 ## Section 2: Interaction Methods  
 1. **Mouse Click:** 
 
@@ -36,6 +37,10 @@ Click any static or dynamic block to transform it into a cluster of randomly col
 ![Figure 5:Keyboard controls up](./%20readmeImage/2.jpg)
 
    When all static and dynamic blocks are cleared, a fireworks animation will appear accompanied by celebratory messages.
+
+If you're confident in your hand speed, you can use the keyboard to continuously increase the frequency and number of blocks generated without pressing the space bar. The game is won when all blocks are cleared.
+If you prefer a simpler approach, you can use the keyboard to decrease the frequency and number of blocks generated, or press the space bar to pause block generation. The game is won when all blocks are cleared.
+
 
 ## Section 3: Individual Approach to Animating the Group Code
 
