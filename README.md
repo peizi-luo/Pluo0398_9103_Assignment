@@ -6,6 +6,7 @@
 (2) Complete a 1,200-word design project report. The report will subsequently be partially revised by other team members.
 
 **Individual:**  
+
 ## Section 1: Project Overview  
 
 ![Figure 1: Mondrian's work: Broadway Jazz](./%20readmeImage/4.jpg)
