@@ -7,7 +7,7 @@
 
 **Individual:**  
 ## Section 1: Project Overview  
-![Figure 1: Mondrian's work: Broadway Jazz](readmeImage/WechatIMG218.jpg)
+![Figure 1: Mondrian's work: Broadway Jazz][ readmeImage/WechatIMG218.jpg]
 This project is based on Piet Mondrian's Broadway Jazz work, inspired by its geometric shapes, horizontal and vertical lines, and the three primary colours of red, yellow, and blue. The work uses coloured blocks and particles in a grid structure to simulate the interaction of real sand grains falling, including a matching and disappearing effect similar to Tetris. This allows users to participate while viewing the art, adding fun without losing the artistic appreciation.
 
 ## Section 2: Interaction Methods  
@@ -87,3 +87,6 @@ Random width, height, position, and colour, then push into randomBlocks.
 （4）Animation Extension: Immediately after generation, add an initial velocity in the y direction to each block vy = -random(5,15), then update the position in draw() b.row += vy; vy += gravity;, causing the blocks to explode like fireworks debris.  
 **Reference: YouTube**  
 Build an HTML5 canvas fireworks simulation from scratch using the p5.js JavaScript library (https://www.youtube.com/watch?v=CKeyIbT3vXI)
+
+
+[ readmeImage/WechatIMG218.jpg]: readmeImage/WechatIMG218.jpg
