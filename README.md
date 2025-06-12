@@ -157,3 +157,6 @@ Random width, height, position, and colour, then push into randomBlocks.
 （4）Animation Extension: Immediately after generation, add an initial velocity in the y direction to each block vy = -random(5,15), then update the position in draw() b.row += vy; vy += gravity;, causing the blocks to explode like fireworks debris.  
 **Reference: YouTube**  
 Build an HTML5 canvas fireworks simulation from scratch using the p5.js JavaScript library (https://www.youtube.com/watch?v=CKeyIbT3vXI)
+
+**Here is the link to my code animation.**
+ https://peizi-luo.github.io/Pluo0398_9103_Assignment/
