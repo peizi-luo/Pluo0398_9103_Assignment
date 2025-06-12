@@ -96,6 +96,9 @@ function setup() {
  * 3. Draw yellow grid lines, base blocks, and dynamic blocks.
  * 4. Render sand particles on top.
  * 5. Trigger & display fireworks + message when complete.
+ * Reference： Youtube
+ * 1. Introduction to building a classic ‘falling sand’ particle system in p5.js (https://www.youtube.com/watch?v=L4u7Zy_b868)
+ * 2. Demonstration of how to use p5.js particle objects to create a fireworks explosion (https://www.youtube.com/watch?v=YPKidHmretc)
  */
 function draw() {
   // 1. Clear & physics
@@ -303,7 +306,8 @@ function keyPressed() {
  * ----------------------
  * Creates and animates a burst of particles as a celebration.
  * **Reference: YouTube**  
- * Build an HTML5 canvas fireworks simulation from scratch using the p5.js JavaScript library (https://www.youtube.com/watch?v=CKeyIbT3vXI)
+ * Build an HTML5 canvas fireworks simulation from scratch using 
+ * the p5.js JavaScript library (https://www.youtube.com/watch?v=CKeyIbT3vXI)
  */
 class Firework {
   constructor() {
