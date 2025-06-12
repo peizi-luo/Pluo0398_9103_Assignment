@@ -112,11 +112,16 @@ function draw() {
   }
 
   // 3. Draw grid lines
-  noStroke(); fill(colours.Y);
+  noStroke();
+   fill(colours.Y);
+   stroke('#000000');
+   strokeWeight(1);
   vLines.forEach(x => rect(x*gridSize, 0, gridSize, canvasHeight));
   hLines.forEach(y => rect(0, y*gridSize, canvasWidth, gridSize));
 
   // 4. Draw base & dynamic blocks
+  stroke('#000000');
+  strokeWeight(1);
   baseBlocks.forEach(b => {
     fill(b.c);
     rect(b.col*gridSize, b.row*gridSize, b.w*gridSize, b.h*gridSize);
@@ -127,6 +132,7 @@ function draw() {
   });
 
   // 5. Draw sand particles
+  noStroke();
   for (let x = 0; x < cols; x++) {
     for (let y = 0; y < rows; y++) {
       let id = sandGrid[x][y];
