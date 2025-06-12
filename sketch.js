@@ -39,8 +39,8 @@ let baseBlocks = [
 let randomBlocks = [];
 let sandGrid;
 let sandPalette = [];
-let spawnCount    = 1;    // blocks per interval
-let spawnInterval = 60;   // frames between spawns
+let spawnCount    = 1;      // blocks per spawn
+let spawnInterval = 60;     // frames between spawns
 let lastSpawn     = 0;
 let fireworks     = [];
 
@@ -50,41 +50,42 @@ let fireworks     = [];
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
   pixelDensity(1);
-  // initialize sand grid
   sandGrid = Array.from({length:cols}, () => Array(rows).fill(0));
-  // sand colors: red, blue, white, yellow, gray
   sandPalette = [colours.R, colours.B, colours.W, colours.Y, colours.G];
-  // initial spawn
   spawnBlocks(spawnCount);
 }
 
 /**
- * Step 4: draw loop
+ * Step 4: draw loop—render layers in order:
+ *   1. background & falling sand
+ *   2. yellow grid lines
+ *   3. base blocks
+ *   4. dynamic blocks (above grid)
+ *   5. fireworks and text
  */
 function draw() {
   background(colours.W);
   updateSand();
-  // auto spawn over time
-  if (frameCount - lastSpawn >= spawnInterval) {
+
+  if (frameCount - lastSpawn >= spawnInterval && autoSpawn) {
     spawnBlocks(spawnCount);
     lastSpawn = frameCount;
   }
-  noStroke();
-  // draw grid lines
-  fill(colours.Y);
-  vLines.forEach(x => rect(x*gridSize, 0, gridSize, canvasHeight));
-  hLines.forEach(y => rect(0, y*gridSize, canvasWidth, gridSize));
-  // draw base blocks
+
+  noStroke(); fill(colours.Y);
+  vLines.forEach(x => rect(x*gridSize,0,gridSize,canvasHeight));
+  hLines.forEach(y => rect(0,y*gridSize,canvasWidth,gridSize));
+
   baseBlocks.forEach(b => {
     fill(b.c);
-    rect(b.col*gridSize, b.row*gridSize, b.w*gridSize, b.h*gridSize);
+    rect(b.col*gridSize,b.row*gridSize,b.w*gridSize,b.h*gridSize);
   });
-  // draw dynamic blocks
+
   randomBlocks.forEach(b => {
     fill(b.c);
-    rect(b.col*gridSize, b.row*gridSize, b.w*gridSize, b.h*gridSize);
+    rect(b.col*gridSize,b.row*gridSize,b.w*gridSize,b.h*gridSize);
   });
-  // draw sand
+
   for (let x = 0; x < cols; x++) {
     for (let y = 0; y < rows; y++) {
       let id = sandGrid[x][y];
@@ -94,13 +95,13 @@ function draw() {
       }
     }
   }
-  // launch fireworks when all blocks gone
-  if (baseBlocks.length===0 && randomBlocks.length===0 && fireworks.length===0) {
+
+  if (baseBlocks.length === 0 && randomBlocks.length === 0 && fireworks.length === 0) {
     fireworks.push(new Firework());
   }
-  fireworks.forEach(fw=>{fw.update();fw.show();});
-  fireworks = fireworks.filter(fw=>!fw.done());
-  if (fireworks.length>0) {
+  fireworks.forEach(fw => { fw.update(); fw.show(); });
+  fireworks = fireworks.filter(fw => !fw.done());
+  if (fireworks.length > 0) {
     textAlign(CENTER, CENTER);
     textSize(48);
     fill(colours.R);
@@ -109,19 +110,20 @@ function draw() {
 }
 
 /**
- * Step 5: spawnBlocks(n)
- * - spawn n off-line + n on-line blocks
+ * Step 5: spawnBlocks(n)—auto spawn blocks
  */
 function spawnBlocks(n) {
   for (let i = 0; i < n; i++) {
-    // off-line block
     let w = floor(random(1,5)), h = floor(random(1,5));
     let colIndex = floor(random(0, cols - w));
     let rowIndex = floor(random(0, rows - h));
     let c = random([colours.R, colours.B, colours.G]);
-    randomBlocks.push({col:colIndex, row:rowIndex, w:w, h:h, c:c});
-    // on-line block
-    let isV = random()<0.5;
+    randomBlocks.push({col:colIndex,row:rowIndex,w:w,h:h,c:c});
+  }
+  for (let i = 0; i < n; i++) {
+    let w = floor(random(1,5)), h = floor(random(1,5));
+    let isV = random() < 0.5;
+    let colIndex, rowIndex;
     if (isV) {
       colIndex = random(vLines);
       rowIndex = floor(random(0, rows - h));
@@ -130,7 +132,7 @@ function spawnBlocks(n) {
       colIndex = floor(random(0, cols - w));
     }
     let c2 = random([colours.R, colours.B, colours.G]);
-    randomBlocks.push({col:colIndex, row:rowIndex, w:w, h:h, c:c2});
+    randomBlocks.push({col:colIndex,row:rowIndex,w:w,h:h,c:c2});
   }
 }
 
@@ -141,19 +143,14 @@ function updateSand() {
   for (let x = cols - 1; x >= 0; x--) {
     for (let y = rows - 1; y >= 0; y--) {
       let id = sandGrid[x][y]; if (!id) continue;
-      if (y+1<rows && sandGrid[x][y+1]===0) {
-        sandGrid[x][y]=0; sandGrid[x][y+1]=id;
-      } else if (y+1<rows && sandGrid[x][y+1]===id) {
-        sandGrid[x][y]=0; sandGrid[x][y+1]=0;
-      } else {
-        let dx = random()<0.5?-1:1;
-        let nx = x+dx;
+      if (y+1<rows && sandGrid[x][y+1]===0) { sandGrid[x][y]=0; sandGrid[x][y+1]=id; }
+      else if (y+1<rows && sandGrid[x][y+1]===id) { sandGrid[x][y]=0; sandGrid[x][y+1]=0; }
+      else {
+        let dx = random()<0.5 ? -1 : 1;
+        let nx = x + dx;
         if (nx>=0 && nx<cols && y+1<rows) {
-          if (sandGrid[nx][y+1]===id) {
-            sandGrid[x][y]=0; sandGrid[nx][y+1]=0;
-          } else if (sandGrid[nx][y+1]===0) {
-            sandGrid[x][y]=0; sandGrid[nx][y+1]=id;
-          }
+          if (sandGrid[nx][y+1]===id) { sandGrid[x][y]=0; sandGrid[nx][y+1]=0; }
+          else if (sandGrid[nx][y+1]===0) { sandGrid[x][y]=0; sandGrid[nx][y+1]=id; }
         }
       }
     }
@@ -164,82 +161,45 @@ function updateSand() {
  * Step 7: mousePressed()
  */
 function mousePressed() {
-  let mx = floor(mouseX / gridSize), my = floor(mouseY / gridSize);
+  let mx = floor(mouseX / gridSize);
+  let my = floor(mouseY / gridSize);
   for (let i = randomBlocks.length - 1; i >= 0; i--) {
     let b = randomBlocks[i];
-    if (mx>=b.col && mx<b.col+b.w && my>=b.row && my<b.row+b.h) {
-      createCluster(b);
-      randomBlocks.splice(i,1);
-      return;
-    }
+    if (mx>=b.col && mx<b.col+b.w && my>=b.row && my<b.row+b.h) { createCluster(b); randomBlocks.splice(i,1); return; }
   }
   for (let i = baseBlocks.length - 1; i >= 0; i--) {
     let b = baseBlocks[i];
-    if (mx>=b.col && mx<b.col+b.w && my>=b.row && my<b.row+b.h) {
-      createCluster(b);
-      baseBlocks.splice(i,1);
-      return;
-    }
+    if (mx>=b.col && mx<b.col+b.w && my>=b.row && my<b.row+b.h) { createCluster(b); baseBlocks.splice(i,1); return; }
   }
 }
 
-// helper: create sand cluster
+// Helper: create sand cluster
 function createCluster(b) {
-  for (let dx=-1; dx<=b.w; dx++) {
-    for (let dy=-1; dy<=b.h; dy++) {
-      let x=b.col+dx, y=b.row+dy;
-      if (x>=0&&x<cols&&y>=0&&y<rows) {
-        sandGrid[x][y] = floor(random(1, sandPalette.length+1));
-      }
-    }
+  for (let dx=-1; dx<=b.w; dx++) for (let dy=-1; dy<=b.h; dy++) {
+    let x=b.col+dx, y=b.row+dy;
+    if (x>=0&&x<cols&&y>=0&&y<rows) sandGrid[x][y]=floor(random(1,sandPalette.length+1));
   }
 }
 
 /**
- * Step 8: keyPressed() => adjust spawnCount and spawnInterval
+ * Step 8: keyPressed() => toggle autoSpawn (space), adjust spawnCount/speed
  */
+let autoSpawn = true;
 function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    spawnCount++;
-    spawnInterval = max(10, spawnInterval - 5);
-  } else if (keyCode === DOWN_ARROW && spawnCount>0) {
-    spawnCount--;
-    spawnInterval = min(120, spawnInterval + 5);
-  }
+  if (key === ' ') autoSpawn = !autoSpawn;
+  else if (keyCode===UP_ARROW) { spawnCount++; spawnInterval=max(10,spawnInterval-5); }
+  else if (keyCode===DOWN_ARROW && spawnCount>0) { spawnCount--; spawnInterval=min(120,spawnInterval+5); }
 }
 
 /**
  * Step 9: Firework class
  */
 class Firework {
-  constructor() {
-    this.particles = [];
-    for (let i = 0; i < 100; i++) {
-      let angle = random(TWO_PI);
-      let speed = random(2,8);
-      this.particles.push({
-        x:canvasWidth/2, y:canvasHeight/2,
-        vx:cos(angle)*speed,
-        vy:sin(angle)*speed,
-        life:255
-      });
-    }
+  constructor() { this.particles=[];
+    for(let i=0;i<100;i++){ let angle=random(TWO_PI),speed=random(2,8);
+      this.particles.push({x:canvasWidth/2,y:canvasHeight/2,vx:cos(angle)*speed,vy:sin(angle)*speed,life:255}); }
   }
-  update() {
-    this.particles.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      p.vx*=0.96; p.vy*=0.96;
-      p.life-=4;
-    });
-  }
-  done() {
-    return this.particles.every(p=>p.life<=0);
-  }
-  show() {
-    noStroke();
-    this.particles.forEach(p=>{
-      fill(255,150,0,p.life);
-      ellipse(p.x,p.y,4);
-    });
-  }
+  update(){ this.particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vx*=0.96; p.vy*=0.96; p.life-=4; });}
+  done(){ return this.particles.every(p=>p.life<=0); }
+  show(){ noStroke(); this.particles.forEach(p=>{ fill(255,150,0,p.life); ellipse(p.x,p.y,4); }); }
 }
