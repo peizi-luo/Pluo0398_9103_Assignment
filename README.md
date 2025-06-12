@@ -39,6 +39,7 @@ Click any static or dynamic block to transform it into a cluster of randomly col
    When all static and dynamic blocks are cleared, a fireworks animation will appear accompanied by celebratory messages.
 
 If you're confident in your hand speed, you can use the keyboard to continuously increase the frequency and number of blocks generated without pressing the space bar. The game is won when all blocks are cleared.
+
 If you prefer a simpler approach, you can use the keyboard to decrease the frequency and number of blocks generated, or press the space bar to pause block generation. The game is won when all blocks are cleared.
 
 
