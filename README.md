@@ -7,6 +7,7 @@
 
 **Individual:**  
 ## Section 1: Project Overview  
+![Figure 1: Mondrian's work: Broadway Jazz](readmeImage/WechatIMG218.jpg)
 This project is based on Piet Mondrian's Broadway Jazz work, inspired by its geometric shapes, horizontal and vertical lines, and the three primary colours of red, yellow, and blue. The work uses coloured blocks and particles in a grid structure to simulate the interaction of real sand grains falling, including a matching and disappearing effect similar to Tetris. This allows users to participate while viewing the art, adding fun without losing the artistic appreciation.
 
 ## Section 2: Interaction Methods  
